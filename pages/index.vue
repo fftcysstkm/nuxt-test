@@ -2,22 +2,17 @@
   <div>
     <v-btn @click="fetchData">データ取得</v-btn>
     <v-btn @click="deleteData">データ初期化</v-btn>
-    <table v-if="posts.length > 0">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Title</th>
-          <th>Body</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="post in posts" :key="post.id">
-          <td>{{ post.id }}</td>
-          <td>{{ post.title }}</td>
-          <td>{{ post.body }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <v-data-table
+      v-if="posts.length > 0"
+      :headers="headers"
+      :items="posts"
+      class="elevation-1"
+      item-key="id"
+    >
+    <template #item.action="{item}">
+      <v-btn color="primary" @click="showDialog(item)">表示</v-btn>
+    </template>
+    </v-data-table>
   </div>
 </template>
 
@@ -28,6 +23,12 @@ import { Post } from '@/model/Post'
 export default defineComponent({
   setup() {
     const posts = ref<Post[]>([]);
+    const headers  = ref([
+      {text: 'ID', align: 'start', value:'id'},
+      {text: 'Title', value: 'title'},
+      {text: 'Body', value: 'body'},
+      {text: 'Actions',value: 'action'}
+    ]);
 
     // データ取得
     const fetchData = async () => {
@@ -45,10 +46,18 @@ export default defineComponent({
       posts.value = [];
     }
 
+    //
+    const showDialog = (item: Post) => {
+      // ここにダイアログ表示ロジックを実装
+      console.log('Dialog shown for:', item);
+    };
+
     return {
       posts,
+      headers,
       fetchData,
-      deleteData
+      deleteData,
+      showDialog
     }
   }
 
