@@ -13,6 +13,20 @@
         <v-btn color="primary" @click="showDialog(item)">表示</v-btn>
       </template>
     </v-data-table>
+    <v-dialog v-model="dialog" persistent max-width="600px">
+      <v-card v-if="selectedPost">
+        <v-card-title>
+          {{ selectedPost.title }}
+        </v-card-title>
+        <v-card-text>
+          {{ selectedPost.body }}
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" text @click="dialog = false">閉じる</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -27,6 +41,8 @@ const headers = ref([
   { text: 'Body', value: 'body' },
   { text: 'Actions', value: 'action' },
 ])
+const dialog = ref(false)
+const selectedPost = ref<Post | null>(null)
 
 // データ取得
 const fetchData = async () => {
@@ -44,9 +60,9 @@ const deleteData = () => {
   posts.value = []
 }
 
-//
+// ダイアログ表示
 const showDialog = (item: Post) => {
-  // ここにダイアログ表示ロジックを実装
-  console.log('Dialog shown for:', item)
+  selectedPost.value = item
+  dialog.value = true
 }
 </script>
